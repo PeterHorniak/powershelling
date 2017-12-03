@@ -1,0 +1,17 @@
+# This script is for creating a folder for each file and then moving each file into its own folder. It assumes all your files have the same name length.
+# Replace <foldername> with the folder containing your files
+# Adjust “Substring(0,8)” to account for the number of characters in the file names.
+#   If <8 characters, part of file name gets cut-off from folder
+#   If >8 characters, there’s an error
+
+Get-ChildItem "<foldername>" | Where-Object {!$_.PSIsContainer} | Foreach-Object{
+ 
+   $dest = Join-Path $_.DirectoryName $_.BaseName.Substring(0,8)
+ 
+    if(!(Test-Path -Path $dest -PathType Container))
+    {
+        $null = md $dest
+    }
+ 
+    $_ | Move-Item -Destination $dest -Force
+}
